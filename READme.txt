@@ -1,2 +1,2 @@
 # Atividade avaliativa
-**Atividade avaliativa que consiste na invenção e desenvolvimento de um programa criativo que faça uso de tudo que aprendemos em sala de aula.
+**Atividade avaliativa que consiste na invenção e desenvolvimento de um programa criativo que faça uso de tudo que aprendemos em sala de aula.**
