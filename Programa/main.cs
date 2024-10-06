@@ -1,5 +1,7 @@
 using System;
 using System.IO;
+using System.Runtime.ConstrainedExecution;
+using System.Runtime.InteropServices;
 using System.Threading;   
 class Program
 {
@@ -37,6 +39,7 @@ class Program
             string[] triagem = new string[vezes];
             float[] imc = new float[vezes];
             string[] medico = new string[vezes];
+            string resultado;
 
             //Loop que permite o programa rodar quantas vezes o usuário requisitou logo acima
             for (cont = 0; cont < vezes; cont++)
@@ -97,7 +100,7 @@ class Program
                 string n = Console.ReadLine();
                 Console.Clear();
 
-                Console.Write($"\nConfirma o nome {n}? (S para sim N para não) > ");
+                Console.Write($"\nConfirma o nome {n}? (S)/(N)\n> ");
 
                 if(char.TryParse(Console.ReadLine().ToLower(), out char confirma) && confirma != 's')
                 {
@@ -115,6 +118,8 @@ class Program
                 string d = Console.ReadLine();
 
                 datas[cont] = d;
+
+                Console.Clear();
 
                 repetir2:
                 Console.Write($"\nInsira o seu peso : ");
@@ -166,7 +171,7 @@ class Program
 
                 triagem[cont] = t;
 
-                Console.Write("\nConfirma informação inserida acima (s)/(n) > ");
+                Console.Write("\nConfirma informação inserida acima (N)/(N) > ");
                 if(!char.TryParse(Console.ReadLine().ToLower(), out char tc) && (tc != s))
                 {
                     Console.WriteLine("\nResponda com S ou N!");
@@ -185,26 +190,48 @@ class Program
             Console.WriteLine("\nEstão cadastrados no sistema de triagem os seguintes perfis :");
             for (int i = 0; i < vezes; i++)
             {
-                if (imc[i] < 18.5)
+                if(imc[i] < 18.5)
                 {
-                    Console.WriteLine($"\nMédico: {medico[i]} \nPaciente: {nomes[i]} \nData de nascimento: {datas[i]} \nPeso: {pesos[i]} \nAltura: {alturas[i]} \nTipo Sanguíneo: {sangu[tsg[i]]} \nIMC: {imc[i]:F2} - Está abaixo do peso.\nRelatório Triagem:\n{triagem}\n\n");
-                    escrever.WriteLine($"\nMédico: {medico[i]} \nPaciente: {nomes[i]} \nData de nascimento: {datas[i]} \nPeso: {pesos[i]} \nAltura: {alturas[i]} \nTipo Sanguíneo: {sangu[tsg[i]]} \nIMC: {imc[i]:F2} - Está abaixo do peso.\nRelatório Triagem:\n{triagem}\n\n");
+                    resultado = $"\nMédico: {medico[i]} \nPaciente: {nomes[i]} \nData de nascimento: {datas[i]} \nPeso: {pesos[i]} \nAltura: {alturas[i]} \nTipo Sanguíneo: {sangu[tsg[i]]} \nIMC: {imc[i]:F2} - Está abaixo do peso.\nRelatório Triagem:\n{triagem[i]}\n\n";
+                    
                 }
                 else if (imc[i] >= 18.5 && imc[i] < 25)
                 {
-                    Console.WriteLine($"\nMédico: {medico[i]} \nPaciente: {nomes[i]} \nData de nascimento: {datas[i]} \nPeso: {pesos[i]} \nAltura: {alturas[i]} \nTipo Sanguíneo: {sangu[tsg[i]]} \nIMC: {imc[i]:F2} - Está dentro do peso adequado.\nRelatório Triagem:\n{triagem}\n\n");
-                    escrever.WriteLine($"\nMédico: {medico[i]} \nPaciente: {nomes[i]} \nData de nascimento: {datas[i]} \nPeso: {pesos[i]} \nAltura: {alturas[i]} \nTipo Sanguíneo: {sangu[tsg[i]]} \nIMC: {imc[i]:F2} - Está dentro do peso adequado.\nRelatório Triagem:\n{triagem}\n\n");
+                    resultado = $"\nMédico: {medico[i]} \nPaciente: {nomes[i]} \nData de nascimento: {datas[i]} \nPeso: {pesos[i]} \nAltura: {alturas[i]} \nTipo Sanguíneo: {sangu[tsg[i]]} \nIMC: {imc[i]:F2} - Está dentro do peso adequado.\nRelatório Triagem:\n{triagem[i]}\n\n";
                 }
                 else if (imc[i] >= 25 && imc[i] < 30)
                 {
-                    Console.WriteLine($"\nMédico: {medico[i]} \nPaciente: {nomes[i]} \nData de nascimento: {datas[i]} \nPeso: {pesos[i]} \nAltura: {alturas[i]} \nTipo Sanguíneo: {sangu[tsg[i]]} \nIMC: {imc[i]:F2} - Está acima do peso adequado.\nRelatório Triagem:\n{triagem}\n\n");
-                    escrever.WriteLine($"\nMédico: {medico[i]} \nPaciente: {nomes[i]} \nData de nascimento: {datas[i]} \nPeso: {pesos[i]} \nAltura: {alturas[i]} \nTipo Sanguíneo: {sangu[tsg[i]]} \nIMC: {imc[i]:F2} - Está acima do peso adequado.\nRelatório Triagem:\n{triagem}\n\n");
+                    resultado = $"\nMédico: {medico[i]} \nPaciente: {nomes[i]} \nData de nascimento: {datas[i]} \nPeso: {pesos[i]} \nAltura: {alturas[i]} \nTipo Sanguíneo: {sangu[tsg[i]]} \nIMC: {imc[i]:F2} - Está acima do peso adequado.\nRelatório Triagem:\n{triagem[i]}\n\n";
                 }
                 else
                 {
-                    Console.WriteLine($"\nMédico: {medico[i]} \nPaciente: {nomes[i]} \nData de nascimento: {datas[i]} \nPeso: {pesos[i]} \nAltura: {alturas[i]} \nTipo Sanguíneo: {sangu[tsg[i]]} \nIMC: {imc[i]:F2} - Está obeso.\nRelatório Triagem:\n{triagem}\n\n");
-                    escrever.WriteLine($"\nMédico: {medico[i]} \nPaciente: {nomes[i]} \nData de nascimento: {datas[i]} \nPeso: {pesos[i]} \nAltura: {alturas[i]} \nTipo Sanguíneo: {sangu[tsg[i]]} \nIMC: {imc[i]:F2} - Está obeso.\n Relatório Triagem:\n{triagem}\n\n");
+                    resultado = $"\nMédico: {medico[i]} \nPaciente: {nomes[i]} \nData de nascimento: {datas[i]} \nPeso: {pesos[i]} \nAltura: {alturas[i]} \nTipo Sanguíneo: {sangu[tsg[i]]} \nIMC: {imc[i]:F2} - Está obeso.\nRelatório Triagem:\n{triagem[i]}\n\n";
                 }
+
+                Console.WriteLine(resultado);
+
+                escrever.WriteLine(resultado);
+            }
+
+
+            final:
+            Console.Write("\nConfirma os resultados? (S)/(N)\n> ");
+            if(char.TryParse(Console.ReadLine().ToLower(), out char cf) && cf != 's')
+            {
+                Console.WriteLine("\nResponda com S ou N!");
+                Thread.Sleep(2000);
+                Console.Clear();
+                goto final;
+            }
+
+            final2:
+            Console.Write("\nQual informação deseja alterar?\n[1] Tipo de consulta\n[2] Nome\n[3] Data de Nascimento\n[4] Peso\n[5] Altura\n[6] Tipo Sanguíneo\n[7] Relatório\n> ");
+            if(!int.TryParse(Console.ReadLine(), out int rf) || rf < 1 || rf > 7)
+            {
+                Console.WriteLine("\nValor Inválido, siga a tabela!");
+                Thread.Sleep(2000);
+                Console.Clear();
+                goto final2;
             }
         }
     }
