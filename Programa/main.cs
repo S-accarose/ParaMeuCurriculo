@@ -1,14 +1,14 @@
 using System;
-using System.Diagnostics;
 using System.IO;
-using System.Reflection.Metadata;
 using System.Threading;   
 class Program
 {
     public static void Main(string[] args)
     {
+        //Função que permite a criação do arquivo de texto.
         using (StreamWriter escrever = new StreamWriter("PerfisTriagem.txt"))
         {
+            //Introdução
             Console.WriteLine("\nBem vindo ao Hospital Santa Casa!");
             Thread.Sleep(4000);
             Console.Clear();
@@ -25,6 +25,7 @@ class Program
             Thread.Sleep(2000);
             Console.Clear();
 
+            //Definição de variáveis, arrays com vezes como extensão, que faz com que a necessidade de armazenamento seja decidida pelo usuário
             string medico = "";
             int cont;
             string[] nomes = new string[vezes];
@@ -33,18 +34,22 @@ class Program
             float[] alturas = new float[vezes];
             string[] sangu = {"A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"};
             int[] tsg = new int[vezes];
-            
+            string[] triagem = new string[vezes];
+            float[] imc = new float[vezes];
+            //Loop que permite o programa rodar quantas vezes o usuário requisitou logo acima
             for (cont = 0; cont < vezes; cont++)
             {
 
                 med:
-                Console.WriteLine("\nCom que médico deseja se consultar? :\n[1] Médico Geral   [2] Neurologista\n[3] Ginecologista   [4] Obstetra\n[5] Urologista   [6] Psicólogo\n[7] Psiquiatra   [8] Odontologista");
+                Console.Write("\nCom que médico deseja se consultar? :\n[1] Médico Geral   [2] Neurologista\n[3] Ginecologista   [4] Obstetra\n[5] Urologista   [6] Psicólogo\n[7] Psiquiatra   [8] Odontologista\n> ");
                 if(!int.TryParse(Console.ReadLine(), out int med))
                 {
                     Console.WriteLine("\nInsira um valor válido.");
                     goto med;
                 }
+                //Array de valores predefinidos com nomes dos funcionários do hospital
                 string[] profi = {"Rafael Lange", "Tomas Silva", "Silvia Martinez", "Carla Diniz", "Tom Frederico", "Cintia Lins", "Fred Mogli", "Aretha Orniz"};
+                //Estrutura de decisão "caso" que vai associar o nome do médico a uma variável a depender da escolha de serviço do usuário
                 switch(med)
                 {
                     case 1:
@@ -87,6 +92,7 @@ class Program
                 {
                     Console.WriteLine("\nPróximo perfil : ");
                 }
+                //Aqui começamos a registrar as informações pessoais do usuário para futura criação de documento txt
                 repetir:
                 Console.Write($"\n{nomes[cont]} insira o seu nome : ");
 
@@ -110,7 +116,7 @@ class Program
                 datas[cont] = d;
 
                 repetir2:
-                Console.Write($"\n {nomes[cont]} insira o seu peso : ");
+                Console.Write($"\nInsira o seu peso : ");
                 if (!float.TryParse(Console.ReadLine(), out float p))
                 {
                     Console.WriteLine("\nInsira um valor válido");
@@ -120,7 +126,7 @@ class Program
                 pesos[cont] = p;
 
                 repetir3:
-                Console.Write($"\n {nomes[cont]} insira a sua altura : ");
+                Console.Write($"\nInsira a sua altura : ");
                 if (!float.TryParse(Console.ReadLine(), out float a))
                 {
                     Console.WriteLine("\nInsira um valor válido");
@@ -128,48 +134,57 @@ class Program
                 }
 
                 alturas[cont] = a;
+
                 repetir4:
-                Console.WriteLine($"\n {nomes[cont]} insira o seu tipo sanguíneo conforme apresentado abaixo :\n(0) - {sangu[0]}\n(1) - {sangu[1]}\n(2) - {sangu[2]}\n(3) - {sangu[3]}\n(4) - {sangu[4]}\n(5) - {sangu[5]}\n(6) - {sangu[6]}\n(7) - {sangu[7]}");
+                Console.Write($"\nInsira o seu tipo sanguíneo conforme apresentado abaixo :\n(0) - {sangu[0]}\n(1) - {sangu[1]}\n(2) - {sangu[2]}\n(3) - {sangu[3]}\n(4) - {sangu[4]}\n(5) - {sangu[5]}\n(6) - {sangu[6]}\n(7) - {sangu[7]}\n> ");
                 if(!int.TryParse(Console.ReadLine(), out int s) && (s != 0 || s != 1 || s != 2 || s != 3 || s != 4 || s != 5 || s != 6 || s != 7))
                 {
                     Console.WriteLine("\nValor Inválido, siga a tabela!");
                     goto repetir4;
                 }
                 tsg[cont] = s;
+
+                reptri:
+                Console.Write("\nDescreva o que está sentindo(seja objetivo para facilitar): ");
+                string t = Console.ReadLine();
+
+                triagem[cont] = t;
+
+                Console.Write("\nConfirma informação inserida acima (s)/(n) > ");
+                if(!char.TryParse(Console.ReadLine().ToLower(), out char tc) && (tc != s))
+                {
+                    goto reptri;
+                }
             }
 
+            //Aqui se encerra o registro de informações e termina com o print em console de todo o cadastro para confirmação. (É também criado arquivo txt com as informações.)
             Console.Clear();
-
-            Console.WriteLine("\n\nDeseja ver as triagens cadastradas e suas informações? (S para sim N para não) > ");
-            char resp = char.Parse(Console.ReadLine().ToLower());
-            if (resp == 's')
+            Console.WriteLine("\n\nEm alguns instantes exibiremos os perfis cadastrados na triagem e suas informações.");
+            Thread.Sleep(5000);
+            Console.Clear();
+            Console.WriteLine("\nEstão cadastrados no sistema de triagem os seguintes perfis :");
+            for (int i = 0; i < vezes; i++)
             {
-                Console.Clear();
-                Console.WriteLine("\nEstão cadastrados no sistema os seguintes perfis :");
-                for (int i = 0; i < vezes; i++)
+                imc[i] = pesos[i] / (alturas[i] * alturas[i]);
+                if (imc[i] < 18.5)
                 {
-                    float[] imc = new float[vezes];
-                    imc[i] = pesos[i] / (alturas[i] * alturas[i]);
-                    if (imc[i] < 18.5)
-                    {
-                        Console.WriteLine($"\nMédico: {medico} \nPaciente: {nomes[i]} \nData de nascimento: {datas[i]} \nPeso: {pesos[i]} \nAltura {alturas[i]} \nTipo Sanguíneo: {sangu[tsg[i]]} \nIMC: {imc[i]:F2} - Está abaixo do peso.\n\n");
-                        escrever.WriteLine($"\nMédico: {medico} \nPaciente: {nomes[i]} \nData de nascimento: {datas[i]} \nPeso: {pesos[i]} \nAltura {alturas[i]} \nTipo Sanguíneo: {sangu[tsg[i]]} \nIMC: {imc[i]:F2} - Está abaixo do peso.\n\n");
-                    }
-                    else if (imc[i] >= 18.5 && imc[i] < 25)
-                    {
-                        Console.WriteLine($"\nMédico: {medico} \nPaciente: {nomes[i]} \nData de nascimento: {datas[i]} \nPeso: {pesos[i]} \nAltura {alturas[i]} \nTipo Sanguíneo: {sangu[tsg[i]]} \nIMC: {imc[i]:F2} - Está dentro do peso adequado.\n\n");
-                        escrever.WriteLine($"\nMédico: {medico} \nPaciente: {nomes[i]} \nData de nascimento: {datas[i]} \nPeso: {pesos[i]} \nAltura {alturas[i]} \nTipo Sanguíneo: {sangu[tsg[i]]} \nIMC: {imc[i]:F2} - Está dentro do peso adequado.\n\n");
-                    }
-                    else if (imc[i] >= 25 && imc[i] < 30)
-                    {
-                        Console.WriteLine($"\nMédico: {medico} \nPaciente: {nomes[i]} \nData de nascimento: {datas[i]} \nPeso: {pesos[i]} \nAltura {alturas[i]} \nTipo Sanguíneo: {sangu[tsg[i]]} \nIMC: {imc[i]:F2} - Está acima do peso adequado.\n\n");
-                        escrever.WriteLine($"\nMédico: {medico} \nPaciente: {nomes[i]} \nData de nascimento: {datas[i]} \nPeso: {pesos[i]} \nAltura {alturas[i]} \nTipo Sanguíneo: {sangu[tsg[i]]} \nIMC: {imc[i]:F2} - Está acima do peso adequado.\n\n");
-                    }
-                    else
-                    {
-                        Console.WriteLine($"\nMédico: {medico} \nPaciente: {nomes[i]} \nData de nascimento: {datas[i]} \nPeso: {pesos[i]} \nAltura {alturas[i]} \nTipo Sanguíneo: {sangu[tsg[i]]} \nIMC: {imc[i]:F2} - Está obeso.\n\n");
-                        escrever.WriteLine($"\nMédico: {medico} \nPaciente: {nomes[i]} \nData de nascimento: {datas[i]} \nPeso: {pesos[i]} \nAltura {alturas[i]} \nTipo Sanguíneo: {sangu[tsg[i]]} \nIMC: {imc[i]:F2} - Está obeso.\n\n");
-                    }
+                    Console.WriteLine($"\nMédico: {medico} \nPaciente: {nomes[i]} \nData de nascimento: {datas[i]} \nPeso: {pesos[i]} \nAltura {alturas[i]} \nTipo Sanguíneo: {sangu[tsg[i]]} \nIMC: {imc[i]:F2} - Está abaixo do peso.\n\n");
+                    escrever.WriteLine($"\nMédico: {medico} \nPaciente: {nomes[i]} \nData de nascimento: {datas[i]} \nPeso: {pesos[i]} \nAltura {alturas[i]} \nTipo Sanguíneo: {sangu[tsg[i]]} \nIMC: {imc[i]:F2} - Está abaixo do peso.\n\n");
+                }
+                else if (imc[i] >= 18.5 && imc[i] < 25)
+                {
+                    Console.WriteLine($"\nMédico: {medico} \nPaciente: {nomes[i]} \nData de nascimento: {datas[i]} \nPeso: {pesos[i]} \nAltura {alturas[i]} \nTipo Sanguíneo: {sangu[tsg[i]]} \nIMC: {imc[i]:F2} - Está dentro do peso adequado.\n\n");
+                    escrever.WriteLine($"\nMédico: {medico} \nPaciente: {nomes[i]} \nData de nascimento: {datas[i]} \nPeso: {pesos[i]} \nAltura {alturas[i]} \nTipo Sanguíneo: {sangu[tsg[i]]} \nIMC: {imc[i]:F2} - Está dentro do peso adequado.\n\n");
+                }
+                else if (imc[i] >= 25 && imc[i] < 30)
+                {
+                    Console.WriteLine($"\nMédico: {medico} \nPaciente: {nomes[i]} \nData de nascimento: {datas[i]} \nPeso: {pesos[i]} \nAltura {alturas[i]} \nTipo Sanguíneo: {sangu[tsg[i]]} \nIMC: {imc[i]:F2} - Está acima do peso adequado.\n\n");
+                    escrever.WriteLine($"\nMédico: {medico} \nPaciente: {nomes[i]} \nData de nascimento: {datas[i]} \nPeso: {pesos[i]} \nAltura {alturas[i]} \nTipo Sanguíneo: {sangu[tsg[i]]} \nIMC: {imc[i]:F2} - Está acima do peso adequado.\n\n");
+                }
+                else
+                {
+                    Console.WriteLine($"\nMédico: {medico} \nPaciente: {nomes[i]} \nData de nascimento: {datas[i]} \nPeso: {pesos[i]} \nAltura {alturas[i]} \nTipo Sanguíneo: {sangu[tsg[i]]} \nIMC: {imc[i]:F2} - Está obeso.\n\n");
+                    escrever.WriteLine($"\nMédico: {medico} \nPaciente: {nomes[i]} \nData de nascimento: {datas[i]} \nPeso: {pesos[i]} \nAltura {alturas[i]} \nTipo Sanguíneo: {sangu[tsg[i]]} \nIMC: {imc[i]:F2} - Está obeso.\n\n");
                 }
             }
         }
